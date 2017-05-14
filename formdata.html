@@ -1,0 +1,69 @@
+<script>
+//xhr对象是全局的可以放在函数之外
+var xhr=new XMLHttpRequest();
+//负责点击上传文件标签后触发上传
+function upfile(){
+
+	var img=document.getElementsByTagName('input')[0].files[0];
+	//console.log(img);
+	var fd=new FormData();
+	//formdata提供往里面追加内容或文件
+	//alert(img.name);
+	fd.append('img',img);
+	xhr.open('POST','formdata.php',true);
+	//上传文件过程中触发的回调函数，用来显示上传进度
+    xhr.upload.onprogress=function(ev){
+    	//在上传过程没结束前lengthComputable一直会为真
+        if(ev.lengthComputable){
+        	//已上传的大小除语总大小乘于100就是上传的百分比了
+        	var percent=100*ev.loaded/ev.total;
+        	//console.log(percent);
+            document.getElementById('bar').style.width=percent+'%';
+            document.getElementById('bar').innerHTML=parseInt(percent)+'%';
+        }
+    }
+    xhr.send(fd); 
+    //把图片显示到div下
+    var tmpimg=document.createElement('img');
+    tmpimg.src=window.URL.createObjectURL(img);
+    //document.getElementById('pic').appendChild(tmpimg); //用下面的也是一样
+    document.getElementsByTagName('div')[0].appendChild(tmpimg);
+}
+//负责演示formdata一次性全部接收表单数据并上传后回显数据
+function uppost(){
+	//这两个变量不能放到外面
+  var fm=document.getElementById('tform');
+  var fd=new FormData(fm);
+   xhr.open('POST','formdata.php',true);
+   xhr.onreadystatechange=function(){
+   	 if(this.readyState==4){
+         alert(this.responseText);
+   	 }
+   }
+   xhr.send(fd);
+}
+</script>
+<style type="text/css">
+#progress{
+	width: 200px;
+	height: 20px;
+	border: 1px solid blue;
+}
+#bar{
+	width: 0%;
+	height: 100%;
+	background: blue;
+}
+</style>
+<h1>带进度条的ajax上传文件和数据，利用到FormData对象和html5的upload对象</h1>
+<body>
+<div id="pic"></div>
+<div id="progress"><div id="bar"></div></div>
+头像<input type="file" name="img" onchange="upfile();" /></br>
+<form id="tform">
+姓名<input type="text" name="user"/></br>
+邮箱<input type="text" name="email"/></br>
+密码<input type="password" name="password"/></br>
+<input type="button" value="提交" onclick="uppost();" />
+</form>
+</body>

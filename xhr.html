@@ -1,0 +1,20 @@
+<script type="text/javascript">
+var xhr=new XMLHttpRequest();
+function vote1(){
+	//第三个参数为true代表同步(指代码执行顺序同步，但获取返回值为异步)，
+    //主要表现在返回值的时间上，这种方式会直接执行以下所有代码
+    //而不在send和alert之间等待php文件先执行，所以alert返回值时为空。
+    //而选择false为参数则相反会等待php文件执行后返回结果再继续执行alert。
+	xhr.open('GET','./xhr.php',false); //设置参数
+	xhr.send(null);   //发送数据，null表示没有空数据发送
+	alert(xhr.responseText);
+}
+function vote2(){
+	
+	xhr.open('GET','./xhr.php',true); //设置参数
+	xhr.send(null);   //发送数据，null表示没有空数据发送
+	alert(xhr.responseText);
+}
+</script>
+<p><input type="button" value="发送ajax的get请求(同步请求[会等待])" onclick="vote1();"></p>
+<p><input type="button" value="发送ajax的get请求(异步请求[不等待])" onclick="vote2();"></p>

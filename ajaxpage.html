@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>ajax分页</title>
+<script type="text/javascript" src="jquery.js">
+</script>
+ <style type="text/css">
+  .cur{
+  	 background-color:yellow;
+  }
+ </style>
+</head>
+<body>
+<div id="xian"></div>
+<span class='page'></span>
+</body>
+<script type="text/javascript">
+ function ajaxGetPage(p){
+   	    $.ajax({
+   	    	type:'GET',
+   	    	url:'./ajaxpage.php?p='+p,
+   	    	dataType:'json',
+   	    	success:function(data){
+   	    		//拼接分页导航条
+   	    		var page='';
+   	    		for(var i=1;i<=data.totlepage;i++){
+   	    			 if(i==p)
+   	    			 	var sel='class="cur"';
+   	    			 else
+   	    			 	var sel='';
+   	    			 page +="<a onclick='ajaxGetPage("+i+");' "+sel+" href='javascript:viod(0);'>"+i+"</a>";
+   	    		}
+   	    		$('.page').html(page);
+   	    		//拼接数据显示
+   	    		var html='<table border=1><tr><th>序号</th><th>权限名</th><th>目录</th><th>控制器</th><th>方法</th></tr>';
+   	    		$(data.data).each(function(k,v){
+                       html +="<tr><td>"+v.id+"</td><td>"+v.pri_name+"</td><td>"+v.module_name+"</td><td>"+v.controller_name+"</td><td>"+v.action_name+"</td></tr>";
+   	    		});
+   	    		html +='</table>';
+   	    		$("#xian").html(html);
+   	    	}
+   	    });
+   }
+   ajaxGetPage(1);
+</script>
+</html>

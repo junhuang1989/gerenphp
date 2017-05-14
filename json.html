@@ -1,0 +1,23 @@
+<script>
+ function vote1(){
+ 	var xhr=new XMLHttpRequest();
+ 	xhr.open('GET','json.php',true);
+ 	xhr.onreadystatechange=function(){
+ 		//status属性加不加判断无影响，只是为了提醒这是获取http状态码的属性
+ 		if(this.readyState==4 ){
+ 			 //alert(this.responseText);
+             var st=eval('('+this.responseText+')');
+             document.getElementById('name').value=st.name;
+             document.getElementById('age').value=st.age; 
+        }     
+ 	}
+ 	xhr.send(null);
+ }
+ 
+</script>
+<body>
+媳妇<input type="text" id="name"/>
+年龄<input type="text" id="age"/>
+<p><input type="button" value="ajax操作json数据返回" onclick="vote1();" /></p>
+
+</body>

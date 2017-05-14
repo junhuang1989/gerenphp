@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+<script type="text/javascript" src="jquery.js"></script>
+ <style type="text/css">
+  .cur{
+  	 background-color:yellow;
+  }
+ </style>
+</head>
+<body>
+<form>
+价格<input type="text" name="sp"/>
+and<input type="text" name="ep"/></br>
+商品名称<input type="text" name="gn"/>
+ID排序<input type='radio' onclick="ajaxpage(1);" name='ob' value="goods_id" checked="checked"/>
+价格排序<input type='radio' onclick="ajaxpage(1);" name='ob' value="shop_price"/>
+升序<input type='radio' onclick="ajaxpage(1);" name='ow' value="asc" checked="checked"/>
+降序<input type='radio' onclick="ajaxpage(1);" name='ow' value="desc"/>
+<input type="button" value="搜索" onclick="ajaxpage(1);"/>
+</form>
+<div id="table"></div>
+<span class="str"></span>
+</body>
+<script type="text/javascript">
+  //默认分页、搜索分页都调用此方法
+  function ajaxpage(p){
+    var str=$('form').serialize();
+  	  $.ajax({
+  	  	   type:'post',
+  	  	   url:'ajaxpage2.php?p='+p,
+           data:str,
+  	  	   dataType:'json',
+  	  	   success:function(data){
+  	  	   	   var page='';
+  	  	   	   for(var i=1;i<=data.totlepage;i++){
+  	  	   	   	   if(i==p)
+  	  	   	   	   	  var sel='class="cur"';
+  	  	   	   	   	else
+  	  	   	   	   	  var sel='';
+  	  	   	   	   	//javascript:viod(0);和javascript:;没什么大区别，都是执行一个空事件不需要返回值
+  	  	   	   	   	//但是javascript:viod(0);有些浏览器也许会有兼容性问题
+  	  	   	   	   	page+="<a onclick='ajaxpage("+i+");' "+sel+" href='javascript:;'>"+i+"</a>&nbsp";
+  	  	   	   }
+  	  	   	   $('.str').html(page);
+  	  	   	   var html='<table border=1><tr><th>商品ID</th><th>商品名称</th><th>本店价格</th><th>库存量</th><th>简单描述</th></tr>';
+  	  	   	   $(data.data).each(function(k,v){
+  	  	   	   	   html +="<tr><td>"+v.goods_id+"</td><td>"+v.goods_name+"</td><td>"+v.shop_price+"</td><td>"+v.goods_number+"</td><td>"+v.goods_brief+"</td></tr>";
+  	  	   	   });
+  	  	   	   html +='</table>';
+   	    		$("#table").html(html);
+  	  	   }
+  	  });
+  }
+  //初始化获取第一页数据
+  ajaxpage(1);
+//搜索点击事件
+$('input[type=button]').click(function(){
+  var str=$('form').serialize();
+   $.ajax({
+    url:'ajaxpage2.php',
+    type:'post',
+    data:str,
+    dataType:'json',
+    success:function(data){
+      var page='';
+       for(var i=1;i<=data.totlepage;i++){
+            page+="<a onclick='ajaxpage("+i+");' href='javascript:void(0)'>"+i+"</a>&nbsp";
+       }
+       $('.str').empty();
+       $('.str').html(page);
+       var html='<table border=1><tr><th>商品ID</th><th>商品名称</th><th>本店价格</th><th>库存量</th><th>简单描述</th></tr>';
+       $(data.data).each(function(k,v){
+           html +="<tr><td>"+v.goods_id+"</td><td>"+v.goods_name+"</td><td>"+v.shop_price+"</td><td>"+v.goods_number+"</td><td>"+v.goods_brief+"</td></tr>";
+       });
+       html +='</table>';
+       $("#table").html(html);
+    }
+  });
+});
+</script>
+</html>

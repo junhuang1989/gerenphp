@@ -1,0 +1,62 @@
+<script>
+ function fileup(){
+ 	const LNG=5*1024*1024; //每次切割9m,如果系统设置的是10M那么这里应该设置为8M因为请求头占不少空间
+ 	var sta=0;          //初始化切割点位置
+ 	var end=sta+LNG;    //累计切割点位置
+ 	var bolb=null;      //切割后的分块文件
+ 	var mov=document.getElementsByName('mov')[0].files[0];
+    var k=1;
+ 	var movtotle=mov.size; //文件总大小
+    var n=Math.ceil(movtotle/LNG);
+    //alert(n);return;
+    var movname=mov.name; //文件名
+    while(sta<movtotle){
+    	bolb=mov.slice(sta,end);
+    	//console.log(bolb);    	
+    	var fd=new FormData();
+    	fd.append(k,bolb);
+    	var xhr=new XMLHttpRequest(); 
+        xhr.open('POST','ajaxfile.php?name='+movname+'&k='+k+'&n='+n,true); 
+        //xhr.setRequestHeader('C',k);
+        xhr.onreadystatechange=function(){
+            if(this.readyState==4 && this.responseText==1){
+                 alert('文件已存在');return;
+            }
+        }
+        xhr.send(fd);
+    	sta=end;
+    	end=sta+LNG;
+        k++;
+
+        //上传的百分比，页面一上传就变成100就是因为赋值的原因
+        var percent=100;
+        if(percent>100){
+            percent=100;
+        }
+        //以下语句虽然会被执行，但只会在循环结束后才会渲染到页面
+        document.getElementById('bar').style.width=percent+'%';
+        document.getElementById('bar').innerHTML=parseInt(percent)+'%';
+    }
+ }
+</script>
+<style type="text/css">
+#progress{
+width:500px;
+height:30px;
+border:1px solid green;
+}
+
+#bar {
+width: 0%;
+height:100%;
+background:green;
+}
+
+</style>
+<body>
+ <h1>html5大文件切割上传</h1>
+        <div id="progress">
+            <div id="bar"></div>
+        </div>
+
+上传文件<input type="file" name="mov" onchange="fileup();"/></body>

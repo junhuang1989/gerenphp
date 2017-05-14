@@ -1,0 +1,16 @@
+ <script type="text/javascript">
+function vote2(){
+ 	var xhr=new XMLHttpRequest();
+ 	xhr.open('GET','html.php',true);
+ 	xhr.onreadystatechange=function(){
+ 		//status属性加不加判断无影响，只是为了提醒这是获取http状态码的属性
+ 		if(this.readyState==4 ){
+ 			 //alert(this.responseText);
+             document.getElementById('news').innerHTML=this.responseText;
+        }     
+ 	}
+ 	xhr.send(null);
+ }
+ </script>
+ <p><input type="button" value="ajax操作html数据返回" onclick="vote2();" /></p>
+<div id="news"></div>

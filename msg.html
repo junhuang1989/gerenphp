@@ -1,0 +1,21 @@
+<script type="text/javascript">
+function ajaxreg(){
+    var xhr=new XMLHttpRequest();
+    xhr.onreadystatechange=function(){
+    	if(this.readyState==4){
+    		alert(this.responseText);
+    	}
+    }
+    var id=document.getElementsByName('id')[0].value;
+    //设置参数,用ture或false这里都无所谓，因为是在上面的回调函数中获取返回数据
+	xhr.open('POST','./msg.php',true); 
+	xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');//http协议中post发送指定类型
+	xhr.send('id='+id);   //发送数据，null表示没有空数据发送
+	return false;
+}
+</script>
+<title>输入ID查询MSG表的信息</title>
+<form action="msg.php" method="post" onsubmit="return ajaxreg();">
+<p>ID：<input type="text" name="id"/></p>
+<p><input type="submit" value="ajax发送post请求" /></p>
+</form>

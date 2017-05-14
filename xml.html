@@ -1,0 +1,21 @@
+<script>
+ function vote(){
+ 	var xhr=new XMLHttpRequest();
+ 	xhr.open('GET','xml.php',true);
+ 	xhr.onreadystatechange=function(){
+ 		//status属性加不加判断无影响，只是为了提醒这是获取http状态码的属性
+ 		if(this.readyState==4 && this.status==200){
+             var xmldom=this.responseXML;
+             var chs=xmldom.getElementsByTagName('book')[0];
+             document.getElementById('title').value=chs.firstChild.firstChild.wholeText;
+             document.getElementById('intro').value=chs.lastChild.firstChild.wholeText;
+        }
+ 	}
+ 	xhr.send(null);
+ }
+</script>
+<body>
+书名<input type="text" id="title">
+简介<input type="text" id="intro">
+<p><input type="button" value="ajax操作xml数据返回" onclick="vote();" /></p>
+</body>

@@ -1,0 +1,56 @@
+<script>
+ function fileup(){
+ 	const LNG=8*1024*1024; //每次切割9m,如果系统设置的是10M那么这里应该设置为8M因为请求头占不少空间
+ 	var sta=0;          //初始化切割点位置
+ 	var end=sta+LNG;    //累计切割点位置
+ 	var bolb=null;      //切割后的分块文件
+ 	var mov=document.getElementsByName('mov')[0].files[0];
+    //console.log(mov);return;
+ 	var movtotle=mov.size; //文件总大小
+    var movname=mov.name; //文件名
+    while(sta<movtotle){
+    	bolb=mov.slice(sta,end);
+    	//console.log(bolb);    	
+    	var fd=new FormData();
+    	fd.append('part',bolb);
+    	var xhr=new XMLHttpRequest(); 
+        xhr.open('POST','maxfileup.php?name='+movname,false); 
+        /*
+        xhr.onreadystatechange=function(){
+            if(this.readyState==4){
+               alert(this.responseText);
+            }
+        }*/
+        xhr.send(fd);
+    	sta=end;
+    	end=sta+LNG;
+         percent = 100 * end / movtotle;
+        if(percent > 100) {
+            percent = 100;
+        }
+        document.getElementById('bar').style.width = percent + '%';
+        document.getElementById('bar').innerHTML = parseInt(percent) + '%';
+    }
+ }
+</script>
+<style type="text/css">
+#progress{
+width:500px;
+height:30px;
+border:1px solid green;
+}
+
+#bar {
+width: 0%;
+height:100%;
+background:green;
+}
+
+</style>
+<body>
+ <h1>html5大文件切割上传</h1>
+        <div id="progress">
+            <div id="bar"></div>
+        </div>
+
+上传文件<input type="file" name="mov" onchange="fileup();"/></body>
