@@ -1,0 +1,11 @@
+.git文件中记得设置：
+[user]
+ email = junhuang1989@163.com #(随便写)
+ name = junhuang  #(随便写)
+
+一般下载就是clone命令
+一般添加就是 git add 文件
+一般删除就是 git rm 文件
+然后都是执行 git commit -m '描述信息'
+再然后 git push 输入账号和密码(可以设置为自动)
+
